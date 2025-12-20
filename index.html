@@ -1,0 +1,2009 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Year with Ayla</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* БАЗОВЫЕ НАСТРОЙКИ */
+        :root {
+            --neon-purple: #9d4edd;
+            --neon-purple-glow: #c77dff;
+            --neon-blue: #00bbf9;
+            --neon-blue-glow: #00f5d4;
+            --deep-space: #0a0a0f;
+            --void: #050508;
+            --stardust: rgba(255, 255, 255, 0.1);
+            --transition-smooth: cubic-bezier(0.83, 0, 0.17, 1);
+            --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--deep-space);
+            color: white;
+            position: fixed;
+            touch-action: pan-y pinch-zoom;
+            user-select: none;
+        }
+
+        /* МОДАЛЬНОЕ ОКНО БЛОКИРОВКИ */
+        .lock-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(10, 10, 15, 0.95) 0%, rgba(5, 5, 8, 0.98) 100%);
+            backdrop-filter: blur(20px);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            opacity: 1;
+            visibility: visible;
+            transition: all 1s var(--transition-smooth);
+        }
+
+        .lock-modal.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .lock-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            color: var(--neon-purple);
+            filter: drop-shadow(0 0 20px var(--neon-purple));
+            animation: lockPulse 3s infinite alternate;
+        }
+
+        .lock-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--neon-purple) 0%, var(--neon-blue) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .lock-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .countdown-container {
+            margin: 3rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(157, 78, 221, 0.2);
+            box-shadow: 0 0 50px rgba(157, 78, 221, 0.2);
+        }
+
+        .countdown-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .countdown-timer {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .countdown-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .countdown-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px var(--neon-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .countdown-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .wait-message {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            background: rgba(157, 78, 221, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(157, 78, 221, 0.3);
+        }
+
+        .new-year-date {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            color: var(--neon-purple);
+            margin-top: 2rem;
+            text-shadow: 0 0 10px var(--neon-purple);
+            padding: 0.5rem 1.5rem;
+            background: rgba(157, 78, 221, 0.1);
+            border-radius: 10px;
+        }
+
+        /* КОСМИЧЕСКИЙ ФОН */
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(157, 78, 221, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 187, 249, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, var(--void) 0%, var(--deep-space) 100%);
+            z-index: -2;
+        }
+
+        /* ЗВЕЗДНОЕ ПОЛЕ */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle 4s infinite;
+        }
+
+        /* НЕОНОВЫЕ ЧАСТИЦЫ */
+        .neon-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            background-color: var(--neon-purple);
+            filter: blur(1px);
+            box-shadow: 0 0 6px var(--neon-purple);
+            opacity: 0;
+        }
+
+        /* КОНТЕЙНЕР СЦЕН */
+        .scenes-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* ОБЩИЕ СТИЛИ СЦЕН */
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(100px);
+            transition: all 1.2s var(--transition-smooth);
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .scene.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            z-index: 10;
+        }
+
+        .scene-content {
+            max-width: 1000px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* СЦЕНА 1: ЗАГРУЗКА СИСТЕМЫ */
+        #scene-1 {
+            background: transparent;
+        }
+
+        .system-activation {
+            text-align: center;
+        }
+
+        .system-title {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s 0.5s forwards;
+        }
+
+        .launch-btn {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 3px;
+            padding: 1.5rem 4rem;
+            border-radius: 16px;
+            cursor: pointer;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 0 40px rgba(157, 78, 221, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.5s var(--transition-smooth);
+            overflow: hidden;
+            text-transform: uppercase;
+            z-index: 10000;
+        }
+
+        .launch-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transition: left 1s ease;
+        }
+
+        .launch-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 
+                0 0 60px rgba(157, 78, 221, 0.4),
+                0 0 100px rgba(0, 187, 249, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border-color: rgba(157, 78, 221, 0.3);
+        }
+
+        .launch-btn:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .launch-btn:hover::before {
+            left: 100%;
+        }
+
+        .breathing-glow {
+            animation: breathingGlow 3s infinite alternate;
+        }
+
+        .pulse-dot {
+            position: absolute;
+            bottom: -30px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--neon-blue);
+            border-radius: 50%;
+            filter: blur(1px);
+            box-shadow: 0 0 10px var(--neon-blue);
+            opacity: 0.7;
+            animation: pulseDot 2s infinite;
+        }
+
+        /* СЦЕНА 2: ПРИВЕТСТВИЕ */
+        #scene-2 .scene-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            padding: 1rem 0;
+        }
+
+        .greeting-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 5;
+            padding: 0 1rem;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .letter-by-letter {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 600;
+            letter-spacing: -1px;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .letter-by-letter::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            color: white;
+            -webkit-text-stroke: 0;
+            overflow: hidden;
+            animation: textReveal 2s 0.5s forwards;
+            white-space: normal;
+            display: inline-block;
+            word-break: break-word;
+        }
+
+        .greeting-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: fadeIn 1s 2.5s forwards;
+            margin-top: 1rem;
+        }
+
+        .scroll-hint-container {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .scroll-hint {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            animation: fadeIn 1s 3s forwards, gentleFloat 3s 3s infinite;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            backdrop-filter: blur(5px);
+        }
+
+        .hint-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .hint-arrow {
+            font-size: 1.8rem;
+            color: var(--neon-purple);
+            filter: drop-shadow(0 0 4px var(--neon-purple));
+            animation: arrowPulse 2s infinite;
+        }
+
+        /* СЦЕНА 3: ПОЗДРАВЛЕНИЕ */
+        .congrats-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: transparent;
+            background: linear-gradient(
+                135deg,
+                var(--neon-purple) 0%,
+                var(--neon-blue) 100%
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            filter: drop-shadow(0 0 30px rgba(157, 78, 221, 0.3));
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* Ensure scene-3 content can take more vertical space */
+        #scene-3 .scene-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 1rem;
+            min-height: 60vh;
+            box-sizing: border-box;
+        }
+
+        .congrats-text {
+            max-width: 900px;
+            width: 100%;
+            /* Сделать контейнер видимым — анимации применяются к параграфам внутри */
+            opacity: 1;
+            transform: translateY(0);
+            overflow-y: auto;
+            padding: 0 0.5rem;
+            max-height: 70vh;
+            margin-bottom: 2rem;
+        }
+
+        .congrats-text p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .parallax-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glowing-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--neon-purple),
+                var(--neon-blue),
+                transparent
+            );
+            filter: blur(1px);
+            box-shadow: 0 0 20px var(--neon-purple);
+            opacity: 0.3;
+        }
+
+        /* СЦЕНА 4: ОТСЧЁТ ВРЕМЕНИ */
+        #scene-4 .scene-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 1rem;
+        }
+
+        .timeline-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: white;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .timeline-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            padding: 0 1rem;
+        }
+
+        .start-date {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            color: var(--neon-purple);
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 0 10px var(--neon-purple));
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .time-counter {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            width: 100%;
+            padding: 0 1rem;
+        }
+
+        .time-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .time-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+            margin-bottom: 0.5rem;
+            filter: drop-shadow(0 0 10px var(--neon-blue));
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .time-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .eternal-message {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+            opacity: 0;
+            transform: translateY(20px);
+            padding: 0 1rem;
+        }
+
+        /* СЦЕНА 5: ТЕЛЕГРАМ ССЫЛКА */
+        #scene-5 .scene-content {
+            text-align: center;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 1rem;
+        }
+
+        .telegram-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: white;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .telegram-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            opacity: 0;
+            transform: translateY(20px);
+            padding: 0 1rem;
+        }
+
+        .telegram-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: var(--neon-purple);
+            text-decoration: none;
+            padding: 1.2rem 2.5rem;
+            border-radius: 12px;
+            background: rgba(157, 78, 221, 0.1);
+            border: 1px solid rgba(157, 78, 221, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s var(--transition-smooth);
+            opacity: 0;
+            transform: translateY(20px);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .telegram-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transition: left 0.7s ease;
+        }
+
+        .telegram-link:hover {
+            color: var(--neon-purple-glow);
+            background: rgba(157, 78, 221, 0.2);
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 30px rgba(157, 78, 221, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .telegram-link:hover::before {
+            left: 100%;
+        }
+
+        .telegram-link .telegram-icon {
+            font-size: 1.8rem;
+        }
+
+        .telegram-message {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3rem;
+            color: var(--neon-blue);
+            padding: 1rem;
+            background: rgba(0, 187, 249, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 187, 249, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* СЦЕНА 6: ФИНАЛ - ЦЕНТРИРОВАННЫЙ */
+        #scene-6 {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .final-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .final-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s 0.3s forwards;
+        }
+
+        .final-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s 0.6s forwards;
+        }
+
+        .heart {
+            color: var(--neon-purple);
+            animation: heartbeat 1.5s infinite;
+            display: inline-block;
+        }
+
+        /* АНИМАЦИИ */
+        @keyframes breathingGlow {
+            0%, 100% {
+                box-shadow: 
+                    0 0 40px rgba(157, 78, 221, 0.2),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                box-shadow: 
+                    0 0 60px rgba(157, 78, 221, 0.4),
+                    0 0 100px rgba(0, 187, 249, 0.2),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        @keyframes pulseDot {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+        }
+
+        @keyframes textReveal {
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes arrowPulse {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty));
+                opacity: 0;
+            }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes lockPulse {
+            0% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 20px var(--neon-purple));
+            }
+            100% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 40px var(--neon-purple));
+            }
+        }
+
+        /* ЭФФЕКТ ЗАПУСКА СИСТЕМЫ */
+        .system-launch-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                0deg,
+                transparent 0%,
+                rgba(157, 78, 221, 0.05) 50%,
+                transparent 100%
+            );
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(100%);
+        }
+
+        /* ПРЕДУПРЕЖДЕНИЕ О ПРОКРУТКЕ */
+        .scroll-warning {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+            text-align: center;
+            z-index: 1000;
+            animation: fadeInOut 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0.2;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        /* БЛОКИРОВКА ПРОКРУТКИ ДО АКТИВАЦИИ */
+        .scroll-block {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        /* ИНДИКАТОР СЦЕН */
+        .scene-indicator {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .scene-indicator.active {
+            opacity: 1;
+        }
+
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .indicator-dot:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.2);
+        }
+
+        .indicator-dot.active {
+            background: var(--neon-purple);
+            box-shadow: 0 0 10px var(--neon-purple);
+            transform: scale(1.3);
+        }
+
+        .indicator-dot.active::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            border: 1px solid var(--neon-purple);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.3);
+            }
+        }
+
+        /* ==================== АДАПТАЦИЯ ДЛЯ ТЕЛЕФОНОВ ==================== */
+        @media (max-width: 768px) {
+            /* Модальное окно */
+            .lock-icon {
+                font-size: 3.5rem;
+            }
+            
+            .lock-title {
+                font-size: 2rem;
+            }
+            
+            .lock-subtitle {
+                font-size: 1.2rem;
+                padding: 0 1rem;
+            }
+            
+            .countdown-container {
+                padding: 1.5rem;
+                margin: 2rem 0;
+            }
+            
+            .countdown-timer {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .countdown-value {
+                font-size: 2.5rem;
+            }
+            
+            .new-year-date {
+                font-size: 1.4rem;
+            }
+
+            .scene {
+                padding: 1.5rem;
+            }
+
+            /* Сцена 1 - Запуск */
+            .launch-btn {
+                font-size: 1.5rem;
+                padding: 1.2rem 2.5rem;
+            }
+
+            .system-title {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            /* Сцена 2 - Приветствие */
+            .letter-by-letter {
+                font-size: 3rem !important;
+            }
+
+            .greeting-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .scroll-hint {
+                padding: 0.5rem 0.8rem;
+            }
+
+            .hint-text {
+                font-size: 0.9rem;
+                letter-spacing: 2px;
+            }
+
+            .hint-arrow {
+                font-size: 1.5rem;
+            }
+
+            /* Сцена 3 - Поздравление */
+            .congrats-title {
+                font-size: 2.5rem !important;
+                margin-bottom: 1.5rem;
+            }
+
+            .congrats-text {
+                max-height: 50vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .congrats-text p {
+                font-size: 1.2rem !important;
+                line-height: 1.6;
+                margin-bottom: 1rem;
+            }
+
+            /* Сцена 4 - Отсчет времени */
+            .timeline-title {
+                font-size: 2rem !important;
+                margin-bottom: 0.5rem;
+            }
+
+            .timeline-subtitle {
+                font-size: 1rem !important;
+                margin-bottom: 1.5rem;
+            }
+
+            .start-date {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .time-counter {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .time-value {
+                font-size: 2.5rem !important;
+            }
+
+            .time-label {
+                font-size: 0.9rem;
+            }
+
+            .eternal-message {
+                font-size: 1.1rem;
+                line-height: 1.5;
+            }
+
+            /* Сцена 5 - Telegram */
+            .telegram-title {
+                font-size: 2rem !important;
+                margin-bottom: 1rem;
+            }
+
+            .telegram-subtitle {
+                font-size: 1rem !important;
+                margin-bottom: 1.5rem;
+            }
+
+            .telegram-link {
+                font-size: 1.1rem;
+                padding: 1rem 1.8rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .telegram-message {
+                font-size: 1rem;
+                padding: 0.8rem;
+            }
+
+            /* Сцена 6 - Финал */
+            .final-title {
+                font-size: 2.5rem !important;
+            }
+
+            .final-subtitle {
+                font-size: 1.2rem !important;
+            }
+
+            /* Индикатор сцен */
+            .scene-indicator {
+                right: 1.5rem;
+                gap: 1rem;
+            }
+
+            .indicator-dot {
+                width: 10px;
+                height: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Модальное окно */
+            .lock-title {
+                font-size: 1.6rem;
+            }
+            
+            .lock-subtitle {
+                font-size: 1rem;
+            }
+            
+            .countdown-value {
+                font-size: 2rem;
+            }
+            
+            .wait-message {
+                font-size: 1rem;
+                padding: 0.8rem 1rem;
+            }
+
+            .scene {
+                padding: 1rem;
+            }
+
+            /* Сцена 1 */
+            .launch-btn {
+                font-size: 1.2rem;
+                padding: 1rem 2rem;
+            }
+
+            /* Сцена 2 */
+            .letter-by-letter {
+                font-size: 2.2rem !important;
+            }
+
+            .greeting-subtitle {
+                font-size: 1rem;
+            }
+
+            /* Сцена 3 */
+            .congrats-title {
+                font-size: 2rem !important;
+            }
+
+            .congrats-text p {
+                font-size: 1rem !important;
+            }
+
+            /* Сцена 4 */
+            .time-counter {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+
+            .time-value {
+                font-size: 2rem !important;
+            }
+
+            /* Сцена 5 */
+            .telegram-title {
+                font-size: 1.8rem !important;
+            }
+
+            .telegram-link {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 0.8rem 1.5rem;
+            }
+
+            /* Сцена 6 */
+            .final-title {
+                font-size: 2rem !important;
+            }
+
+            .final-subtitle {
+                font-size: 1rem !important;
+                padding: 0 1rem;
+            }
+
+            /* Предупреждение о прокрутке */
+            .scroll-warning {
+                font-size: 0.8rem;
+                bottom: 1rem;
+            }
+
+            /* Индикатор сцен - перемещаем вниз на очень маленьких экранах */
+            .scene-indicator {
+                right: 1rem;
+                top: auto;
+                bottom: 1rem;
+                transform: none;
+                flex-direction: row;
+                gap: 0.8rem;
+                justify-content: center;
+                width: 100%;
+            }
+        }
+
+        /* Для очень маленькой высоты экрана */
+        @media (max-height: 600px) {
+            .scene {
+                padding: 0.5rem;
+            }
+
+            .letter-by-letter {
+                font-size: 2rem !important;
+                margin-bottom: 0.5rem;
+            }
+
+            .congrats-title {
+                font-size: 1.8rem !important;
+                margin-bottom: 0.5rem;
+            }
+
+            .congrats-text p {
+                font-size: 0.9rem !important;
+                margin-bottom: 0.5rem;
+                line-height: 1.4;
+            }
+
+            .time-value {
+                font-size: 1.8rem !important;
+            }
+
+            .final-title {
+                font-size: 1.8rem !important;
+            }
+
+            .final-subtitle {
+                font-size: 0.9rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- МОДАЛЬНОЕ ОКНО БЛОКИРОВКИ -->
+    <div class="lock-modal" id="lock-modal">
+        <div class="lock-icon">🔒</div>
+        <h1 class="lock-title">ДО НОВОГО ГОДА</h1>
+        <div class="lock-subtitle">
+            Это цифровое послание будет доступно только после 1 января 2026 года в 00:00.
+            Пожалуйста, подождите немного — скоро начнется новая глава!
+        </div>
+        
+        <div class="countdown-container">
+            <div class="countdown-title">До разблокировки осталось:</div>
+            <div class="countdown-timer">
+                <div class="countdown-unit">
+                    <div class="countdown-value" id="lock-days">00</div>
+                    <div class="countdown-label">дней</div>
+                </div>
+                <div class="countdown-unit">
+                    <div class="countdown-value" id="lock-hours">00</div>
+                    <div class="countdown-label">часов</div>
+                </div>
+                <div class="countdown-unit">
+                    <div class="countdown-value" id="lock-minutes">00</div>
+                    <div class="countdown-label">минут</div>
+                </div>
+                <div class="countdown-unit">
+                    <div class="countdown-value" id="lock-seconds">00</div>
+                    <div class="countdown-label">секунд</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="wait-message">
+            Айла, этот сюрприз стоит того, чтобы немного подождать! ✨
+        </div>
+        
+        <div class="new-year-date">
+            1 января 2026 • 00:00
+        </div>
+    </div>
+
+    <!-- КОСМИЧЕСКИЙ ФОН -->
+    <div class="cosmic-bg"></div>
+    <div class="starfield" id="starfield"></div>
+
+    <!-- БЛОКИРОВКА ПРОКРУТКИ ДО АКТИВАЦИИ -->
+    <div class="scroll-block" id="scroll-block"></div>
+
+    <!-- КОНТЕЙНЕР СЦЕН -->
+    <div class="scenes-container">
+        <!-- СЦЕНА 1: ЗАГРУЗКА СИСТЕМЫ -->
+        <div class="scene" id="scene-1">
+            <div class="scene-content">
+                <div class="system-activation">
+                    <div class="system-title">Happy New Year!</div>
+                    <button class="launch-btn breathing-glow" id="launch-btn">
+                        ЗАПУСТИТЬ
+                        <div class="pulse-dot"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- СЦЕНА 2: ПРИВЕТСТВИЕ -->
+        <div class="scene" id="scene-2">
+            <div class="scene-content">
+                <div class="greeting-container">
+                    <div class="letter-by-letter" data-text="Привет, Айла">Привет, Айла</div>
+                    <div class="greeting-subtitle">Добро пожаловать в мою цифровую вселенную (ты теперь часть её) </div>
+                </div>
+                <div class="scroll-hint-container">
+                    <div class="scroll-hint">
+                        <div class="hint-text">Прокрути вниз</div>
+                        <div class="hint-arrow">↓</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- СЦЕНА 3: ПОЗДРАВЛЕНИЕ -->
+        <div class="scene" id="scene-3">
+            <div class="parallax-layer" id="parallax-layer"></div>
+            <div class="scene-content">
+                <h1 class="congrats-title">С Новым годом, Айла 🎄</h1>
+                <div class="congrats-text">
+                    <p>Пусть этот новый год станет для тебя временем чудесных открытий.</p>
+                    <p>Я благодарен судьбе за каждый миг проведенный рядом с тобой.</p>
+
+                    <p>С новым годом любимая! Пусть этот год принесет нам еще больше радостных моментов вместе,я очень рад что ты есть в моей жизни!</p>
+                    <p>С любовью, твой эндермен 💜</p>
+                    <p>ОЧЕНЬ ЛЮБЛЮ ТЕБЯ! <3 </p>
+                </div>
+            </div>
+        </div>  
+
+        <!-- СЦЕНА 4: ОТСЧЁТ ВРЕМЕНИ -->
+        <div class="scene" id="scene-4">
+            <div class="scene-content">
+                <h2 class="timeline-title">С момента, как всё началось…</h2>
+                <div class="timeline-subtitle">Время это иллюзия но эти мгновения реальны</div>
+                <div class="start-date">7 декабря</div>
+                
+                <div class="time-counter" id="time-counter">
+                    <div class="time-unit">
+                        <div class="time-value" id="days">000</div>
+                        <div class="time-label">дней</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="time-value" id="hours">00</div>
+                        <div class="time-label">часов</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="time-value" id="minutes">00</div>
+                        <div class="time-label">минут</div>
+                    </div>
+                    <div class="time-unit">
+                        <div class="time-value" id="seconds">00</div>
+                        <div class="time-label">секунд</div>
+                    </div>
+                </div>
+
+                <div class="eternal-message">
+                    И каждый следующий миг вместе для меня доказательство что лучшие вещи в жизни не измеряются временем а ощущаются сердцем
+                </div>
+            </div>
+        </div>
+
+        <!-- СЦЕНА 5: ТЕЛЕГРАМ ССЫЛКА -->
+        <div class="scene" id="scene-5">
+            <div class="scene-content">
+                <h2 class="telegram-title">Последний сюрприз</h2>
+                <div class="telegram-subtitle">
+                    Хочу сохранить эту связь навсегда. Нажми на кнопку ниже, чтобы отправить мне сообщение в Telegram. 
+                </div>
+                
+                <a href="https://t.me/foreeel4ik?text=первый-новый-год!" class="telegram-link" target="_blank" id="telegram-link">
+                    <span class="telegram-icon">✉️</span>
+                    <span>Написать в Telegram</span>
+                </a>
+                
+                <div class="telegram-message">
+                    Сообщение будет отправлено с текстом: "первый-новый-год!" (P.S. Ниже пасхалка 😉)
+                </div>
+            </div>
+        </div>
+
+        <!-- СЦЕНА 6: ФИНАЛ -->
+        <div class="scene" id="scene-6">
+            <div class="final-container">
+                <div class="final-title">от эндермена</div>
+                <div class="final-subtitle">с любовью <span class="heart"><3</span> от любимого эндермена</div>
+                <div class="final-subtitle">Айла, я не пожалею ни одного момента с тобой,мне очень нравится наша пара, и я вижу тебя своим будущим, мы со всем справимся!Ты у меня очень харощи.Спасибо тебе за такой крутой нг, да и в целом за то что появилась у меня в жизни.Безумно тебя ЛЮБЛЮ. Зацелую тебя при следующей встрече ^^</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ИНДИКАТОР ПРОГРЕССА -->
+    <div class="scene-indicator" id="scene-indicator">
+        <div class="indicator-dot active" data-scene="0"></div>
+        <div class="indicator-dot" data-scene="1"></div>
+        <div class="indicator-dot" data-scene="2"></div>
+        <div class="indicator-dot" data-scene="3"></div>
+        <div class="indicator-dot" data-scene="4"></div>
+        <div class="indicator-dot" data-scene="5"></div>
+    </div>
+
+    <!-- ПРЕДУПРЕЖДЕНИЕ -->
+    <div class="scroll-warning" id="scroll-warning">используйте колесо мыши или свайп</div>
+
+    <!-- ЭФФЕКТ ЗАПУСКА -->
+    <div class="system-launch-effect" id="launch-effect"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Документ загружен, начинаем инициализацию...');
+            
+            const state = {
+                currentScene: 0,
+                totalScenes: 6,
+                isTransitioning: false,
+                isSystemActivated: false,
+                startDate: new Date('2025-12-07T18:55:00'),
+                touchStartY: 0,
+                touchEndY: 0,
+                lastScrollTime: 0,
+                scrollThrottle: 1200
+            };
+
+            const lockModal = document.getElementById('lock-modal');
+            const lockDays = document.getElementById('lock-days');
+            const lockHours = document.getElementById('lock-hours');
+            const lockMinutes = document.getElementById('lock-minutes');
+            const lockSeconds = document.getElementById('lock-seconds');
+            
+            const scenes = document.querySelectorAll('.scene');
+            const launchBtn = document.getElementById('launch-btn');
+            const launchEffect = document.getElementById('launch-effect');
+            const indicatorDots = document.querySelectorAll('.indicator-dot');
+            const starfield = document.getElementById('starfield');
+            const parallaxLayer = document.getElementById('parallax-layer');
+            const scrollWarning = document.getElementById('scroll-warning');
+            const timeCounter = document.getElementById('time-counter');
+            const scrollBlock = document.getElementById('scroll-block');
+            const telegramLink = document.getElementById('telegram-link');
+            const sceneIndicator = document.getElementById('scene-indicator');
+
+            // Функция проверки даты
+            function checkDateAndLock() {
+                const targetDate = new Date('2026-01-01T00:00:00');
+                const now = new Date();
+                
+                if (now >= targetDate) {
+                    // НОВЫЙ ГОД НАСТУПИЛ - скрываем модальное окно
+                    lockModal.classList.add('hidden');
+                    document.body.style.overflow = 'hidden';
+                    initMainApp();
+                } else {
+                    // НОВЫЙ ГОД ЕЩЕ НЕ НАСТУПИЛ - показываем модальное окно
+                    lockModal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                    startLockCountdown();
+                }
+            }
+
+            // Отсчет времени до нового года
+            function startLockCountdown() {
+                function updateLockCountdown() {
+                    const targetDate = new Date('2026-01-01T00:00:00');
+                    const now = new Date();
+                    const diff = targetDate - now;
+                    
+                    if (diff <= 0) {
+                        // Время пришло!
+                        lockModal.classList.add('hidden');
+                        document.body.style.overflow = 'hidden';
+                        initMainApp();
+                        return;
+                    }
+                    
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                    
+                    lockDays.textContent = days.toString().padStart(2, '0');
+                    lockHours.textContent = hours.toString().padStart(2, '0');
+                    lockMinutes.textContent = minutes.toString().padStart(2, '0');
+                    lockSeconds.textContent = seconds.toString().padStart(2, '0');
+                    
+                    // Анимация при изменении секунд
+                    if (seconds === 59) {
+                        animateLockCountdown();
+                    }
+                }
+                
+                updateLockCountdown();
+                setInterval(updateLockCountdown, 1000);
+            }
+
+            function animateLockCountdown() {
+                const values = [lockDays, lockHours, lockMinutes, lockSeconds];
+                values.forEach(value => {
+                    value.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        value.style.transform = 'scale(1)';
+                    }, 200);
+                });
+            }
+
+            // Основное приложение (оригинальный код)
+            function initMainApp() {
+                console.log('Инициализация основной системы...');
+                
+                createStarfield();
+                createParallaxLines();
+                setupEventListeners();
+                setupSceneAnimations();
+                startTimeCounter();
+                
+                disableScrolling();
+                
+                // Активируем первую сцену
+                scenes[0].classList.add('active');
+                
+                console.log('Основная система инициализирована');
+            }
+
+            function createStarfield() {
+                const starCount = window.innerWidth < 768 ? 100 : 200;
+                
+                for (let i = 0; i < starCount; i++) {
+                    const star = document.createElement('div');
+                    star.classList.add('star');
+                    
+                    const size = Math.random() * 2 + 0.5;
+                    const posX = Math.random() * 100;
+                    const posY = Math.random() * 100;
+                    const opacity = Math.random() * 0.8 + 0.2;
+                    const duration = Math.random() * 4 + 2;
+                    const delay = Math.random() * 5;
+                    
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+                    star.style.left = `${posX}%`;
+                    star.style.top = `${posY}%`;
+                    star.style.opacity = opacity;
+                    star.style.animationDelay = `${delay}s`;
+                    star.style.animationDuration = `${duration}s`;
+                    
+                    starfield.appendChild(star);
+                }
+            }
+
+            function createParallaxLines() {
+                const lineCount = 12;
+                
+                for (let i = 0; i < lineCount; i++) {
+                    const line = document.createElement('div');
+                    line.classList.add('glowing-line');
+                    
+                    const width = Math.random() * 300 + 100;
+                    const top = Math.random() * 100;
+                    const left = Math.random() * 100;
+                    const rotation = Math.random() * 360;
+                    const opacity = Math.random() * 0.2 + 0.1;
+                    const duration = Math.random() * 20 + 10;
+                    const delay = Math.random() * 5;
+                    
+                    line.style.width = `${width}px`;
+                    line.style.top = `${top}%`;
+                    line.style.left = `${left}%`;
+                    line.style.transform = `rotate(${rotation}deg)`;
+                    line.style.opacity = opacity;
+                    line.style.animation = `lineFloat ${duration}s linear ${delay}s infinite`;
+                    
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        @keyframes lineFloat {
+                            0% {
+                                transform: rotate(${rotation}deg) translateX(0);
+                            }
+                            50% {
+                                transform: rotate(${rotation + 10}deg) translateX(${Math.random() * 200 - 100}px);
+                                opacity: ${opacity * 1.5};
+                            }
+                            100% {
+                                transform: rotate(${rotation}deg) translateX(0);
+                            }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                    
+                    parallaxLayer.appendChild(line);
+                }
+            }
+
+            function disableScrolling() {
+                scrollBlock.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                sceneIndicator.classList.remove('active');
+            }
+
+            function enableScrolling() {
+                scrollBlock.style.display = 'none';
+                document.body.style.overflow = '';
+                sceneIndicator.classList.add('active');
+            }
+
+            function setupEventListeners() {
+                launchBtn.addEventListener('click', handleSystemLaunch);
+                
+                window.addEventListener('wheel', handleWheel, { passive: false });
+                
+                window.addEventListener('touchstart', handleTouchStart, { passive: true });
+                window.addEventListener('touchend', handleTouchEnd, { passive: true });
+                
+                window.addEventListener('keydown', handleKeyDown);
+                
+                indicatorDots.forEach((dot, index) => {
+                    dot.addEventListener('click', () => {
+                        if (state.isSystemActivated) {
+                            goToScene(index);
+                        }
+                    });
+                });
+            }
+
+            function handleSystemLaunch() {
+                if (state.isSystemActivated) return;
+                
+                state.isSystemActivated = true;
+                
+                enableScrolling();
+                
+                launchEffect.style.opacity = '1';
+                launchEffect.style.transform = 'translateY(0)';
+                launchEffect.style.transition = 'all 1.5s cubic-bezier(0.87, 0, 0.13, 1)';
+                
+                launchBtn.style.transform = 'scale(0.95)';
+                launchBtn.style.opacity = '0.7';
+                launchBtn.disabled = true;
+                launchBtn.textContent = 'СИСТЕМА ЗАПУЩЕНА';
+                
+                createLaunchParticles();
+                
+                setTimeout(() => {
+                    launchEffect.style.opacity = '0';
+                    launchEffect.style.transform = 'translateY(-100%)';
+                    nextScene();
+                }, 1500);
+                
+                scrollWarning.style.opacity = '0';
+            }
+
+            function createLaunchParticles() {
+                const particleCount = 50;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('neon-particle');
+                    
+                    const startX = window.innerWidth / 2;
+                    const startY = window.innerHeight / 2;
+                    
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 400 + 200;
+                    const tx = Math.cos(angle) * distance;
+                    const ty = Math.sin(angle) * distance;
+                    
+                    const size = Math.random() * 3 + 1;
+                    const color = Math.random() > 0.5 ? '157, 78, 221' : '0, 187, 249';
+                    const duration = Math.random() * 1 + 0.5;
+                    const delay = Math.random() * 0.5;
+                    
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.left = `${startX}px`;
+                    particle.style.top = `${startY}px`;
+                    particle.style.backgroundColor = `rgb(${color})`;
+                    particle.style.boxShadow = `0 0 ${size * 3}px rgb(${color})`;
+                    particle.style.setProperty('--tx', `${tx}px`);
+                    particle.style.setProperty('--ty', `${ty}px`);
+                    particle.style.animation = `particleFloat ${duration}s ${delay}s forwards`;
+                    
+                    document.body.appendChild(particle);
+                    
+                    setTimeout(() => {
+                        if (particle.parentNode) {
+                            particle.remove();
+                        }
+                    }, (duration + delay) * 1000);
+                }
+            }
+
+            function handleWheel(e) {
+                e.preventDefault();
+                
+                if (!state.isSystemActivated) return;
+                
+                const now = Date.now();
+                if (now - state.lastScrollTime < state.scrollThrottle) return;
+                
+                state.lastScrollTime = now;
+                
+                if (e.deltaY > 0) {
+                    nextScene();
+                } else if (e.deltaY < 0) {
+                    prevScene();
+                }
+            }
+
+            function handleTouchStart(e) {
+                state.touchStartY = e.touches[0].clientY;
+            }
+
+            function handleTouchEnd(e) {
+                if (!state.isSystemActivated) return;
+                
+                if (state.isTransitioning) return;
+                
+                state.touchEndY = e.changedTouches[0].clientY;
+                const diff = state.touchStartY - state.touchEndY;
+                
+                if (Math.abs(diff) > 50) {
+                    const now = Date.now();
+                    if (now - state.lastScrollTime < state.scrollThrottle) return;
+                    
+                    state.lastScrollTime = now;
+                    
+                    if (diff > 0) {
+                        nextScene();
+                    } else {
+                        prevScene();
+                    }
+                }
+            }
+
+            function handleKeyDown(e) {
+                if (!state.isSystemActivated) return;
+                
+                const now = Date.now();
+                if (now - state.lastScrollTime < state.scrollThrottle) return;
+                
+                state.lastScrollTime = now;
+                
+                switch(e.key) {
+                    case 'ArrowDown':
+                    case 'PageDown':
+                    case ' ':
+                        e.preventDefault();
+                        nextScene();
+                        break;
+                    case 'ArrowUp':
+                    case 'PageUp':
+                        e.preventDefault();
+                        prevScene();
+                        break;
+                    case 'Home':
+                        e.preventDefault();
+                        goToScene(0);
+                        break;
+                    case 'End':
+                        e.preventDefault();
+                        goToScene(state.totalScenes - 1);
+                        break;
+                }
+            }
+
+            function nextScene() {
+                if (state.isTransitioning || state.currentScene >= state.totalScenes - 1) return;
+                
+                state.isTransitioning = true;
+                const nextSceneIndex = state.currentScene + 1;
+                
+                scenes[state.currentScene].classList.remove('active');
+                scenes[nextSceneIndex].classList.add('active');
+                
+                updateSceneIndicator(nextSceneIndex);
+                activateSceneAnimations(nextSceneIndex);
+                
+                state.currentScene = nextSceneIndex;
+                
+                setTimeout(() => {
+                    state.isTransitioning = false;
+                }, 1200);
+            }
+
+            function prevScene() {
+                if (state.isTransitioning || state.currentScene <= 0) return;
+                
+                state.isTransitioning = true;
+                const prevSceneIndex = state.currentScene - 1;
+                
+                scenes[state.currentScene].classList.remove('active');
+                scenes[prevSceneIndex].classList.add('active');
+                
+                updateSceneIndicator(prevSceneIndex);
+                state.currentScene = prevSceneIndex;
+                
+                setTimeout(() => {
+                    state.isTransitioning = false;
+                }, 1200);
+            }
+
+            function goToScene(sceneIndex) {
+                if (!state.isSystemActivated || state.isTransitioning || sceneIndex === state.currentScene || 
+                    sceneIndex < 0 || sceneIndex >= state.totalScenes) return;
+                
+                state.isTransitioning = true;
+                
+                scenes[state.currentScene].classList.remove('active');
+                scenes[sceneIndex].classList.add('active');
+                
+                updateSceneIndicator(sceneIndex);
+                activateSceneAnimations(sceneIndex);
+                
+                state.currentScene = sceneIndex;
+                
+                setTimeout(() => {
+                    state.isTransitioning = false;
+                }, 1200);
+            }
+
+            function updateSceneIndicator(sceneIndex) {
+                indicatorDots.forEach((dot, index) => {
+                    if (index === sceneIndex) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            }
+
+            function setupSceneAnimations() {
+                const greetingText = document.querySelector('.letter-by-letter');
+                if (greetingText) {
+                    greetingText.style.animation = 'textReveal 2s 0.5s forwards';
+                }
+            }
+
+            function activateSceneAnimations(sceneIndex) {
+                const scene = scenes[sceneIndex];
+                
+                switch(sceneIndex) {
+                    case 1:
+                        const greetingText = scene.querySelector('.letter-by-letter');
+                        const greetingSubtitle = scene.querySelector('.greeting-subtitle');
+                        const scrollHint = scene.querySelector('.scroll-hint');
+                        
+                        if (greetingText) {
+                            greetingText.style.animation = 'none';
+                            setTimeout(() => {
+                                greetingText.style.animation = 'textReveal 2s 0.3s forwards';
+                            }, 10);
+                        }
+                        
+                        if (greetingSubtitle) {
+                            greetingSubtitle.style.animation = 'fadeIn 1s 2.3s forwards';
+                        }
+                        
+                        if (scrollHint) {
+                            scrollHint.style.animation = 'fadeIn 1s 3s forwards, gentleFloat 3s 3s infinite';
+                        }
+                        break;
+                        
+                    case 2:
+                        const congratsTitle = scene.querySelector('.congrats-title');
+                        const congratsTexts = scene.querySelectorAll('.congrats-text p');
+                        
+                        if (congratsTitle) {
+                            congratsTitle.style.animation = 'fadeInUp 1.2s 0.3s forwards';
+                        }
+                        
+                        congratsTexts.forEach((p, index) => {
+                            p.style.animation = `fadeInUp 1s ${0.5 + index * 0.3}s forwards`;
+                        });
+                        break;
+                        
+                    case 3:
+                        const timelineTitle = scene.querySelector('.timeline-title');
+                        const timelineSubtitle = scene.querySelector('.timeline-subtitle');
+                        const startDate = scene.querySelector('.start-date');
+                        const timeValues = scene.querySelectorAll('.time-value');
+                        const eternalMessage = scene.querySelector('.eternal-message');
+                        
+                        if (timelineTitle) timelineTitle.style.animation = 'fadeInUp 1s 0.3s forwards';
+                        if (timelineSubtitle) timelineSubtitle.style.animation = 'fadeInUp 1s 0.5s forwards';
+                        if (startDate) startDate.style.animation = 'fadeInUp 1s 0.7s forwards';
+                        
+                        timeValues.forEach((value, index) => {
+                            value.style.animation = `fadeInUp 0.8s ${0.9 + index * 0.1}s forwards`;
+                        });
+                        
+                        if (eternalMessage) eternalMessage.style.animation = 'fadeInUp 1s 1.5s forwards';
+                        break;
+                        
+                    case 4:
+                        const telegramTitle = scene.querySelector('.telegram-title');
+                        const telegramSubtitle = scene.querySelector('.telegram-subtitle');
+                        const telegramLinkEl = scene.querySelector('.telegram-link');
+                        const telegramMessage = scene.querySelector('.telegram-message');
+                        
+                        if (telegramTitle) telegramTitle.style.animation = 'fadeInUp 1s 0.3s forwards';
+                        if (telegramSubtitle) telegramSubtitle.style.animation = 'fadeInUp 1s 0.5s forwards';
+                        if (telegramLinkEl) telegramLinkEl.style.animation = 'fadeInUp 1s 0.8s forwards';
+                        if (telegramMessage) telegramMessage.style.animation = 'fadeInUp 1s 1.2s forwards';
+                        break;
+                        
+                    case 5:
+                        const finalTitle = scene.querySelector('.final-title');
+                        const finalSubtitle = scene.querySelector('.final-subtitle');
+                        
+                        if (finalTitle) finalTitle.style.animation = 'fadeInUp 1s 0.3s forwards';
+                        if (finalSubtitle) finalSubtitle.style.animation = 'fadeInUp 1s 0.6s forwards';
+                        break;
+                }
+            }
+
+            function startTimeCounter() {
+                updateTimeCounter();
+                setInterval(updateTimeCounter, 1000);
+            }
+
+            function updateTimeCounter() {
+                const now = new Date();
+                const diff = now - state.startDate;
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('days').textContent = days.toString().padStart(3, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+                
+                if (seconds % 10 === 0) {
+                    animateCounterUpdate();
+                }
+            }
+
+            function animateCounterUpdate() {
+                const values = document.querySelectorAll('.time-value');
+                values.forEach(value => {
+                    value.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        value.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            }
+
+            // Запускаем проверку даты при загрузке
+            checkDateAndLock();
+        });
+    </script>
+</body>
+</html>
