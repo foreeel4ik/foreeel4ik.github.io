@@ -439,6 +439,128 @@
             }
 
 
+/* Стили для всплывающих сообщений */
+.floating-message {
+    position: fixed;
+    z-index: 10000;
+    pointer-events: none;
+    user-select: none;
+    background: linear-gradient(135deg, rgba(255, 46, 142, 0.9), rgba(157, 78, 221, 0.9));
+    color: white;
+    padding: 10px 18px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    animation: float-message 2.5s ease-out forwards;
+    transform: translateX(-50%);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+    word-wrap: break-word;
+}
+
+@keyframes float-message {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(10px) scale(0.9);
+    }
+    15% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+    85% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-15px) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-25px) scale(0.95);
+    }
+}
+
+/* Специальные стили для мобильных устройств */
+.floating-message.mobile-message {
+    animation: float-message-mobile 2.5s ease-out forwards;
+    font-size: 0.85rem;
+    padding: 8px 14px;
+    line-height: 1.3;
+    border-radius: 12px;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+}
+
+@keyframes float-message-mobile {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(10px) scale(0.9);
+    }
+    15% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+    85% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-10px) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-15px) scale(0.95);
+    }
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+    .floating-message:not(.mobile-message) {
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        max-width: 85%;
+        white-space: normal;
+        text-align: center;
+        font-size: 0.85rem;
+        padding: 8px 15px;
+        line-height: 1.3;
+    }
+    
+    @keyframes float-message {
+        0% {
+            opacity: 0;
+            transform: translateX(-50%) translateY(10px) scale(0.9);
+        }
+        15% {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0) scale(1);
+        }
+        85% {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px) scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-15px) scale(0.95);
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-message {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+        border-radius: 10px;
+        max-width: 90%;
+    }
+    
+    .floating-message.mobile-message {
+        font-size: 0.78rem;
+        padding: 6px 10px;
+    }
+}
+
 /* Стили для летающих сердечек */
 .flying-heart {
     position: fixed;
@@ -1618,47 +1740,103 @@ function initHearts() {
         return heart;
     }
     
-    // Функция для создания всплывающего сообщения
-    function createFloatingMessage(message, x, y) {
-        const messageEl = document.createElement('div');
-        messageEl.classList.add('floating-message');
-        messageEl.textContent = message;
-        
-        // Позиционируем сообщение с учетом границ экрана
-        const messageWidth = 200; // Приблизительная ширина сообщения
-        const messageHeight = 50; // Приблизительная высота
-        
-        let posX = x;
-        let posY = y - 40; // Немного выше сердечка
-        
-        // Проверяем, чтобы сообщение не выходило за левый край
-        if (posX < messageWidth / 2) {
-            posX = messageWidth / 2;
-        }
-        
-        // Проверяем, чтобы сообщение не выходило за правый край
-        if (posX > window.innerWidth - messageWidth / 2) {
-            posX = window.innerWidth - messageWidth / 2;
-        }
-        
-        // Проверяем, чтобы сообщение не выходило за верхний край
-        if (posY < messageHeight) {
-            posY = y + 40; // Если сверху нет места, показываем снизу
-        }
-        
-        messageEl.style.left = `${posX}px`;
-        messageEl.style.top = `${posY}px`;
-        messageEl.style.transform = 'translateX(-50%)';
-        
-        document.body.appendChild(messageEl);
-        
-        // Удаляем сообщение после анимации
-        setTimeout(() => {
-            if (messageEl.parentNode) {
-                messageEl.parentNode.removeChild(messageEl);
-            }
-        }, 2500);
+ // Функция для создания всплывающего сообщения (исправленная версия)
+function createFloatingMessage(message, heartX, heartY) {
+    const messageEl = document.createElement('div');
+    messageEl.classList.add('floating-message');
+    messageEl.textContent = message;
+    
+    // Создаем временный элемент для измерения ширины
+    const tempEl = document.createElement('div');
+    tempEl.style.position = 'absolute';
+    tempEl.style.visibility = 'hidden';
+    tempEl.style.whiteSpace = 'nowrap';
+    tempEl.style.fontSize = '0.9rem';
+    tempEl.style.fontWeight = '600';
+    tempEl.style.fontFamily = 'Inter, sans-serif';
+    tempEl.textContent = message;
+    document.body.appendChild(tempEl);
+    
+    const messageWidth = tempEl.offsetWidth;
+    const messageHeight = 40; // Приблизительная высота сообщения
+    document.body.removeChild(tempEl);
+    
+    // Рассчитываем безопасную позицию
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const padding = 10; // Минимальный отступ от краев
+    
+    // Пытаемся разместить сообщение выше сердечка
+    let posX = heartX;
+    let posY = heartY - 50;
+    
+    // Если сверху нет места, размещаем снизу
+    if (posY < messageHeight + padding) {
+        posY = heartY + 40;
     }
+    
+    // Корректируем позицию по X, чтобы сообщение не выходило за края
+    // Центрируем относительно сердечка, но следим за границами
+    const leftEdge = messageWidth / 2 + padding;
+    const rightEdge = screenWidth - messageWidth / 2 - padding;
+    
+    if (posX < leftEdge) {
+        // Слишком близко к левому краю - смещаем вправо
+        posX = leftEdge;
+    } else if (posX > rightEdge) {
+        // Слишком близко к правому краю - смещаем влево
+        posX = rightEdge;
+    }
+    
+    // Еще одна проверка - если сообщение очень длинное, уменьшаем шрифт
+    const maxWidth = screenWidth - 2 * padding;
+    if (messageWidth > maxWidth) {
+        messageEl.style.fontSize = '0.8rem';
+        messageEl.style.maxWidth = `${maxWidth}px`;
+        messageEl.style.whiteSpace = 'normal';
+        messageEl.style.wordBreak = 'break-word';
+        messageEl.style.textAlign = 'center';
+    }
+    
+    messageEl.style.left = `${posX}px`;
+    messageEl.style.top = `${posY}px`;
+    
+    document.body.appendChild(messageEl);
+    
+    // Добавляем адаптацию для мобильных
+    if (window.innerWidth <= 768) {
+        messageEl.classList.add('mobile-message');
+        
+        // На мобильных принудительно центрируем и делаем меньше
+        messageEl.style.left = '50%';
+        messageEl.style.transform = 'translateX(-50%)';
+        messageEl.style.width = 'auto';
+        messageEl.style.maxWidth = '80%';
+        messageEl.style.whiteSpace = 'normal';
+        messageEl.style.textAlign = 'center';
+        messageEl.style.padding = '8px 12px';
+        messageEl.style.fontSize = '0.8rem';
+        
+        // Позиционируем по вертикали в случайном месте верхней трети экрана
+        const safeTop = Math.max(
+            50, // Минимум 50px от верха
+            Math.min(
+                screenHeight * 0.3, // Максимум 30% от высоты экрана
+                heartY - 30
+            )
+        );
+        messageEl.style.top = `${safeTop}px`;
+    }
+    
+    // Удаляем сообщение после анимации
+    setTimeout(() => {
+        if (messageEl.parentNode) {
+            messageEl.parentNode.removeChild(messageEl);
+        }
+    }, 2500);
+    
+    return messageEl;
+}
     
     // Обработчик клика на кнопку сердечка
     heartButton.addEventListener('click', function(e) {
