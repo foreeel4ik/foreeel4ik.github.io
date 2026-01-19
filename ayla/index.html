@@ -1,1 +1,1864 @@
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Айла | 20.01.2026</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            :root {
+                --dark-bg: #0a0a14;
+                --dark-secondary: #151522;
+                --accent-pink: #ff2e8e;
+                --accent-purple: #9d4edd;
+                --accent-red: #ff3a5e;
+                --accent-blue: #5a86ff;
+                --text-primary: #f5f5f7;
+                --text-secondary: #b0b0c0;
+                --gradient-primary: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+                --gradient-secondary: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            }
 
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: var(--dark-bg);
+                color: var(--text-primary);
+                line-height: 1.6;
+                overflow-x: hidden;
+            }
+
+            /* Анимированный фон */
+            #background {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: -1;
+                overflow: hidden;
+            }
+
+            .gradient-bg {
+                position: absolute;
+                width: 150%;
+                height: 150%;
+                top: -25%;
+                left: -25%;
+                background: radial-gradient(circle at 30% 30%, rgba(255, 46, 142, 0.15) 0%, transparent 50%),
+                            radial-gradient(circle at 70% 70%, rgba(157, 78, 221, 0.15) 0%, transparent 50%),
+                            radial-gradient(circle at 40% 80%, rgba(90, 134, 255, 0.1) 0%, transparent 50%);
+                animation: gradient-move 20s infinite alternate ease-in-out;
+            }
+
+            .particles {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+
+            .particle {
+                position: absolute;
+                background: var(--gradient-primary);
+                border-radius: 50%;
+                opacity: 0.3;
+            }
+
+            /* Основные стили */
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+                position: relative;
+                z-index: 1;
+            }
+
+            section {
+                padding: 100px 0;
+                position: relative;
+            }
+
+            h1, h2, h3 {
+                font-weight: 700;
+                line-height: 1.2;
+            }
+
+            h1 {
+                font-size: 4rem;
+                background: var(--gradient-primary);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin-bottom: 20px;
+                letter-spacing: -0.5px;
+            }
+
+            h2 {
+                font-size: 2.5rem;
+                margin-bottom: 40px;
+                position: relative;
+                display: inline-block;
+            }
+
+            h2:after {
+                content: '';
+                position: absolute;
+                bottom: -10px;
+                left: 0;
+                width: 60px;
+                height: 4px;
+                background: var(--gradient-primary);
+                border-radius: 2px;
+            }
+
+            p {
+                font-size: 1.1rem;
+                color: var(--text-secondary);
+                margin-bottom: 20px;
+            }
+
+            /* Главный экран */
+            .hero {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .hero-content {
+                max-width: 800px;
+                padding: 40px;
+                background: rgba(10, 10, 20, 0.7);
+                backdrop-filter: blur(10px);
+                border-radius: 20px;
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                animation: float 6s ease-in-out infinite;
+            }
+
+            .love-timer {
+                margin: 40px 0;
+                font-size: 2.5rem;
+                font-weight: 700;
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .timer-unit {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 15px;
+                min-width: 120px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 15px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .timer-unit:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(255, 46, 142, 0.2);
+            }
+
+            .timer-value {
+                font-size: 2.8rem;
+                background: var(--gradient-primary);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .timer-label {
+                font-size: 0.9rem;
+                color: var(--text-secondary);
+                margin-top: 5px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            .hero-subtitle {
+                font-size: 1.8rem;
+                margin: 40px 0;
+                color: var(--text-primary);
+                font-weight: 300;
+            }
+
+            .highlight {
+                background: var(--gradient-primary);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                font-weight: 600;
+            }
+
+            /* Галерея */
+            .gallery {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 25px;
+                margin-top: 50px;
+            }
+
+            .photo-item {
+                position: relative;
+                border-radius: 15px;
+                overflow: hidden;
+                aspect-ratio: 4/3;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                transition: transform 0.5s ease, box-shadow 0.5s ease;
+            }
+
+            .photo-item img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.8s ease;
+            }
+
+            .photo-item:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 40px rgba(255, 46, 142, 0.2);
+            }
+
+            .photo-item:hover img {
+                transform: scale(1.1);
+            }
+
+            /* Почему я люблю Айлу */
+            .reasons {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+                gap: 25px;
+                margin-top: 50px;
+            }
+
+            .reason-card {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 15px;
+                padding: 30px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                transition: transform 0.3s ease, background 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .reason-card:hover {
+                transform: translateY(-10px);
+                background: rgba(255, 255, 255, 0.08);
+            }
+
+            .reason-card:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: var(--gradient-primary);
+            }
+
+            .reason-number {
+                font-size: 3rem;
+                font-weight: 700;
+                background: var(--gradient-primary);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                opacity: 0.3;
+                position: absolute;
+                top: 10px;
+                right: 20px;
+            }
+
+            .reason-text {
+                font-size: 1.2rem;
+                margin-top: 20px;
+                color: var(--text-primary);
+            }
+
+            /* Наши моменты */
+            .timeline {
+                position: relative;
+                max-width: 800px;
+                margin: 50px auto 0;
+            }
+
+            .timeline:before {
+                content: '';
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 2px;
+                height: 100%;
+                background: var(--gradient-primary);
+            }
+
+            .timeline-item {
+                margin-bottom: 60px;
+                position: relative;
+                width: 45%;
+            }
+
+            .timeline-item:nth-child(odd) {
+                left: 0;
+            }
+
+            .timeline-item:nth-child(even) {
+                left: 55%;
+            }
+
+            .timeline-content {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 15px;
+                padding: 25px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .timeline-content:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 4px;
+                background: var(--gradient-secondary);
+            }
+
+            .timeline-date {
+                font-size: 0.9rem;
+                color: var(--accent-purple);
+                margin-bottom: 10px;
+                font-weight: 600;
+            }
+
+            .timeline-title {
+                font-size: 1.4rem;
+                margin-bottom: 10px;
+                color: var(--text-primary);
+            }
+
+            .timeline-desc {
+                color: var(--text-secondary);
+            }
+
+            .timeline-marker {
+                position: absolute;
+                top: 0;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background: var(--gradient-primary);
+                box-shadow: 0 0 0 5px rgba(10, 10, 20, 0.9);
+            }
+
+            .timeline-item:nth-child(odd) .timeline-marker {
+                right: -60px;
+            }
+
+            .timeline-item:nth-child(even) .timeline-marker {
+                left: -60px;
+            }
+
+            /* Интерактивные элементы */
+            .heart-btn {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background: var(--gradient-primary);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.8rem;
+                color: white;
+                cursor: pointer;
+                box-shadow: 0 5px 20px rgba(255, 46, 142, 0.4);
+                z-index: 100;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                border: none;
+            }
+
+            .heart-btn:hover {
+                transform: scale(1.1);
+                box-shadow: 0 8px 25px rgba(255, 46, 142, 0.6);
+            }
+
+            .heart-popup {
+                position: absolute;
+                font-size: 1.2rem;
+                color: var(--accent-pink);
+                opacity: 0;
+                pointer-events: none;
+                animation: float-up 2s ease-out;
+            }
+
+            .clickable-heart {
+                position: absolute;
+                cursor: pointer;
+                font-size: 1.2rem;
+                color: var(--accent-pink);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            /* Футер */
+            footer {
+                text-align: center;
+                padding: 60px 0;
+                border-top: 1px solid rgba(255, 255, 255, 0.05);
+                margin-top: 100px;
+            }
+
+            .footer-text {
+                font-size: 1.2rem;
+                color: var(--text-secondary);
+            }
+
+            .footer-heart {
+                color: var(--accent-pink);
+                font-size: 1.5rem;
+                margin: 0 5px;
+            }
+
+
+/* Стили для летающих сердечек */
+.flying-heart {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0;
+    will-change: transform, opacity;
+    transform-origin: center;
+}
+
+@keyframes fly-heart {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.5) rotate(0deg);
+    }
+    10% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--move-x), var(--move-y)) scale(0.3) rotate(180deg);
+    }
+}
+
+/* Стили для всплывающих сообщений */
+.floating-message {
+    position: fixed;
+    z-index: 10000;
+    pointer-events: none;
+    user-select: none;
+    background: rgba(10, 10, 20, 0.9);
+    color: #ff2e8e;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 46, 142, 0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    animation: float-message 2s ease-out forwards;
+}
+
+@keyframes float-message {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(10px);
+    }
+    20% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    80% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-15px);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-30px);
+    }
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+    .floating-message {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+        max-width: 180px;
+        white-space: normal;
+        word-break: break-word;
+        line-height: 1.3;
+        white-space: pre-line;
+        text-align: center;
+    }
+    
+    @keyframes fly-heart {
+        0% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0.5) rotate(0deg);
+        }
+        10% {
+            opacity: 1;
+            transform: translate(0, 0) scale(1) rotate(0deg);
+        }
+        100% {
+            opacity: 0;
+            transform: 
+                translate(
+                    calc(var(--move-x) * 0.7), 
+                    calc(var(--move-y) * 0.7)
+                ) 
+                scale(0.3) 
+                rotate(180deg);
+        }
+    }
+    
+    @keyframes float-message {
+        0% {
+            opacity: 0;
+            transform: translateX(-50%) translateY(10px);
+        }
+        20% {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        80% {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+        100% {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px);
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-message {
+        font-size: 0.75rem;
+        padding: 5px 10px;
+        max-width: 150px;
+    }
+    
+    .flying-heart {
+        font-size: 20px !important; /* Ограничиваем максимальный размер */
+    }
+}
+/* Стили для всплывающих сообщений */
+.floating-message {
+    position: fixed;
+    z-index: 10000;
+    pointer-events: none;
+    user-select: none;
+    background: rgba(10, 10, 20, 0.85);
+    color: #ff2e8e;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 46, 142, 0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    animation: float-message 2.5s ease-out forwards;
+    transform: translateX(-50%);
+    margin-left: -50%;
+}
+
+@keyframes float-message {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(10px);
+    }
+    20% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    80% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-40px);
+    }
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+    .floating-message {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+        max-width: 200px;
+        white-space: normal;
+        text-align: center;
+    }
+    
+    @keyframes fly-heart {
+        0% {
+            opacity: 0;
+            transform: translate(0, 0) scale(0.5) rotate(0deg);
+        }
+        10% {
+            opacity: 1;
+            transform: translate(0, 0) scale(1) rotate(0deg);
+        }
+        100% {
+            opacity: 0;
+            transform: 
+                translate(
+                    calc(var(--direction-x) * 100px),
+                    calc(var(--direction-y) * 200px)
+                ) 
+                scale(0.3) 
+                rotate(360deg);
+        }
+    }
+}
+
+            /* Финальное сообщение с glassmorphism эффектом */
+#final-message {
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+#final-message:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 50%, rgba(255, 46, 142, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(157, 78, 221, 0.1) 0%, transparent 50%);
+    z-index: -1;
+}
+
+.message-glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    padding: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: float 8s ease-in-out infinite;
+}
+
+.message-glass:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+                rgba(255, 46, 142, 0.05) 0%, 
+                rgba(157, 78, 221, 0.05) 50%, 
+                rgba(90, 134, 255, 0.05) 100%);
+    z-index: -1;
+}
+
+.message-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+    font-size: 2.5rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(255, 46, 142, 0.4);
+    animation: pulse 3s ease-in-out infinite;
+}
+
+#final-message h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.2rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#final-message h2:after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.message-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.message-text {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: var(--text-primary);
+    margin-bottom: 25px;
+    padding-left: 20px;
+    border-left: 3px solid var(--accent-pink);
+    opacity: 0.9;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.message-text:hover {
+    opacity: 1;
+    transform: translateX(5px);
+}
+
+.signature {
+    margin: 40px 0 30px;
+    text-align: right;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.signature-line {
+    height: 2px;
+    width: 150px;
+    background: var(--gradient-primary);
+    margin-left: auto;
+    margin-bottom: 10px;
+}
+
+.signature-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+}
+
+.signature-date {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.secret-code {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 40px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 50px;
+    border: 1px solid rgba(255, 46, 142, 0.2);
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    color: var(--accent-purple);
+    letter-spacing: 1px;
+}
+
+.secret-code i {
+    font-size: 0.8rem;
+    color: var(--accent-pink);
+    animation: spin 4s linear infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(255, 46, 142, 0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(255, 46, 142, 0.6); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+    #final-message {
+        padding: 60px 0;
+    }
+    
+    .message-glass {
+        padding: 30px 20px;
+        border-radius: 20px;
+    }
+    
+    .message-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+    
+    #final-message h2 {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+    }
+    
+    .message-text {
+        font-size: 1.1rem;
+        padding-left: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .signature {
+        margin: 30px 0 20px;
+    }
+    
+    .signature-name {
+        font-size: 1.3rem;
+    }
+    
+    .secret-code {
+        font-size: 0.9rem;
+        padding: 12px;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .message-glass {
+        padding: 25px 15px;
+    }
+    
+    #final-message h2 {
+        font-size: 1.5rem;
+    }
+    
+    .message-text {
+        font-size: 1rem;
+    }
+    
+    .signature-name {
+        font-size: 1.2rem;
+    }
+}
+
+            /* Стили для шифрованных элементов с фиксированными размерами */
+.encrypted-title, .encrypted-desc {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(157, 78, 221, 0.3);
+    overflow: hidden;
+    margin-bottom: 10px;
+    /* Фиксируем размеры чтобы не прыгало */
+    min-height: 50px; /* Фиксированная минимальная высота */
+    display: block;
+    box-sizing: border-box;
+}
+
+.encrypted-title {
+    font-size: 1.4rem;
+    color: #ff3a5e;
+    font-weight: 600;
+    text-shadow: 0 0 5px rgba(255, 58, 94, 0.3);
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.encrypted-desc {
+    color: #9d4edd;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    text-shadow: 0 0 3px rgba(157, 78, 221, 0.3);
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    /* Обрезаем текст если он не помещается */
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.encryption-icon {
+    font-size: 0.8rem;
+    color: var(--accent-purple);
+    margin-top: 10px;
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Courier New', monospace;
+}
+
+.encryption-icon i {
+    font-size: 0.8rem;
+}
+
+/* Эффект мерцания для шифрованных элементов */
+@keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+.encrypted-title {
+    animation: flicker 1.5s infinite;
+}
+
+.encrypted-desc {
+    animation: flicker 2s infinite;
+}
+
+/* Для обычных элементов тоже задаем фиксированные размеры для выравнивания */
+.timeline-title, .timeline-desc {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.timeline-desc {
+    min-height: 80px;
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+    .encryption-icon {
+        font-size: 0.7rem;
+    }
+    
+    .encrypted-title {
+        font-size: 1.2rem;
+        padding: 6px 10px;
+        min-height: 50px;
+    }
+    
+    .encrypted-desc {
+        padding: 6px 10px;
+        min-height: 70px;
+        -webkit-line-clamp: 2;
+    }
+    
+    .timeline-title, .timeline-desc {
+        min-height: 50px;
+    }
+    
+    .timeline-desc {
+        min-height: 70px;
+    }
+}
+
+            /* Анимации */
+            @keyframes gradient-move {
+                0% {
+                    transform: translate(0, 0) rotate(0deg);
+                }
+                100% {
+                    transform: translate(-5%, -5%) rotate(1deg);
+                }
+            }
+
+            @keyframes float {
+                0%, 100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-20px);
+                }
+            }
+
+            @keyframes float-up {
+                0% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translateY(-50px);
+                }
+            }
+
+            @keyframes fade-in {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Адаптация под мобильные устройства */
+            @media (max-width: 992px) {
+                h1 {
+                    font-size: 3rem;
+                }
+                
+                .hero-subtitle {
+                    font-size: 1.5rem;
+                }
+                
+                .love-timer {
+                    font-size: 1.8rem;
+                }
+                
+                .timer-unit {
+                    min-width: 100px;
+                    padding: 10px;
+                }
+                
+                .timer-value {
+                    font-size: 2rem;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .hero-content {
+                    padding: 20px;
+                }
+                
+                h1 {
+                    font-size: 2.5rem;
+                }
+                
+                h2 {
+                    font-size: 2rem;
+                }
+                
+                section {
+                    padding: 70px 0;
+                }
+                
+                .gallery, .reasons {
+                    grid-template-columns: 1fr;
+                }
+                
+                .timeline:before {
+                    left: 30px;
+                }
+                
+                .timeline-item {
+                    width: 100%;
+                    left: 0 !important;
+                    padding-left: 70px;
+                }
+                
+                .timeline-marker {
+                    left: 20px !important;
+                }
+                
+                .love-timer {
+                    gap: 10px;
+                }
+                
+                .timer-unit {
+                    min-width: 80px;
+                    padding: 8px;
+                }
+                
+                .timer-value {
+                    font-size: 1.8rem;
+                }
+            }
+
+            @media (max-width: 480px) {
+                h1 {
+                    font-size: 2rem;
+                }
+                
+                .hero-subtitle {
+                    font-size: 1.2rem;
+                }
+                
+                .love-timer {
+                    font-size: 1.2rem;
+                }
+                
+                .timer-unit {
+                    min-width: 70px;
+                }
+                
+                .timer-value {
+                    font-size: 1.5rem;
+                }
+            }
+
+            /* Анимация появления элементов при скролле */
+            .fade-in {
+                animation: fade-in 1s ease forwards;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Анимированный фон -->
+        <div id="background">
+            <div class="gradient-bg"></div>
+            <div class="particles" id="particles"></div>
+        </div>
+
+        <!-- Главный экран -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content fade-in">
+                    <h1>Айла</h1>
+                    <div class="hero-subtitle">
+                        Ты знаешь, как я по тебе скучаю. <span class="highlight">И конечно же безумно люблю</span>
+                    </div>
+                    
+                    <!-- Таймер отношений -->
+                    <div class="love-timer">
+                        <div class="timer-unit">
+                            <div class="timer-value" id="days">0</div>
+                            <div class="timer-label">Дней</div>
+                        </div>
+                        <div class="timer-unit">
+                            <div class="timer-value" id="hours">0</div>
+                            <div class="timer-label">Часов</div>
+                        </div>
+                        <div class="timer-unit">
+                            <div class="timer-value" id="minutes">0</div>
+                            <div class="timer-label">Минут</div>
+                        </div>
+                        <div class="timer-unit">
+                            <div class="timer-value" id="seconds">0</div>
+                            <div class="timer-label">Секунд</div>
+                        </div>
+                    </div>
+                    
+                    <p>И каждый истеченный день потверждает что я люблю тебя каждый раз все больше и больше</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Галерея -->
+        <section id="gallery">
+            <div class="container">
+                
+                <div class="gallery">
+                    <!-- Фотографии будут добавлены через JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Почему я люблю Айлу -->
+        <section id="reasons">
+            <div class="container">
+                <h2>Почему я люблю Айлу</h2>
+                
+                <div class="reasons">
+                    <!-- Причины будут добавлены через JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Наши моменты -->
+        <section id="moments">
+            <div class="container">
+                <h2>Наши моменты</h2>
+                <p>Важные даты, которые изменили всё.</p>
+                
+                <div class="timeline">
+                    <!-- Таймлайн будет добавлен через JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Финальное сообщение -->
+<section id="final-message">
+    <div class="container">
+        <div class="message-glass">
+            <div class="message-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <h2>Моё последнее сообщение на сегодня для тебя</h2>
+            <div class="message-content">
+                <p class="message-text">
+                    Айлаа, я очень рад что ты есть в моей жизни. Каждый день с тобой — это подарок.
+                    Так все сложилось удачно, что мы нашли друг друга в этом огромном мире, хотя мы оба не ожидали.
+                </p>
+                <p class="message-text">
+                    Я очень рад что ты можешь мне довериться, для меня это очень важно. Я обещаю всегда быть рядом, поддерживать тебя и любить.
+                    Ни за что в жизни не захочу сделать тебе больно или обидеть тебя.
+                    Вместе мы сможем преодолеть любые трудности и испытания.Главное говорить друг с другом открыто и честно. 
+                </p>
+                <p class="message-text">
+                    Впереди нас ждут небольшие трудности по типу расстояния, но я уверен что мы справимся.
+                    Вместе мы сильнее любых преград. Я верю в нас и в нашу любовь
+                    Безумно тебя люблю и скучаю по тебе каждый день <3
+
+                </p>
+                <div class="signature">
+                    <div class="signature-line"></div>
+                    <div class="signature-name">Твой Эндермен</div>
+                    <div class="signature-date">20.01.2026</div>
+                </div>
+                <div class="secret-code">
+                    <i class="fas fa-star"></i>
+                    <span>Ты - мой шифр к счастью</span>
+                    <i class="fas fa-star"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!-- Футер -->
+        <footer>
+            <div class="container">
+                <p class="footer-text">Создано со всей любовью в мире, которая умещается в одно имя <span class="highlight">Айла</span></p>
+                <p class="footer-text">Люблю тебя оченьь сильнааа <i class="fas fa-heart footer-heart"></i></p>
+            </div>
+        </footer>
+
+        <!-- Кнопка сердечка -->
+        <button class="heart-btn" id="heartButton">
+            <i class="fas fa-heart"></i>
+        </button>
+
+        <script>
+            // Дата начала отношений (легко изменить)
+            const startDate = new Date('2025-12-07T19:00:00');
+            
+            // Элементы таймера
+            const daysEl = document.getElementById('days');
+            const hoursEl = document.getElementById('hours');
+            const minutesEl = document.getElementById('minutes');
+            const secondsEl = document.getElementById('seconds');
+            
+            // Функция обновления таймера
+            function updateTimer() {
+                const now = new Date();
+                const diff = now - startDate;
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                daysEl.textContent = days;
+                hoursEl.textContent = hours.toString().padStart(2, '0');
+                minutesEl.textContent = minutes.toString().padStart(2, '0');
+                secondsEl.textContent = seconds.toString().padStart(2, '0');
+            }
+            
+            // Запускаем таймер
+            updateTimer();
+            setInterval(updateTimer, 1000);
+            
+            // Создание частиц для фона
+            function createParticles() {
+                const particlesContainer = document.getElementById('particles');
+                const particleCount = 50;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    // Случайные параметры
+                    const size = Math.random() * 5 + 2;
+                    const posX = Math.random() * 100;
+                    const posY = Math.random() * 100;
+                    const delay = Math.random() * 5;
+                    const duration = Math.random() * 10 + 10;
+                    
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.left = `${posX}%`;
+                    particle.style.top = `${posY}%`;
+                    particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite alternate`;
+                    particle.style.opacity = Math.random() * 0.4 + 0.1;
+                    
+                    particlesContainer.appendChild(particle);
+                }
+            }
+            
+            // Инициализация галереи
+            function initGallery() {
+                const gallery = document.querySelector('.gallery');
+                
+                // Примеры фотографий (замените на реальные URL)
+                const photos = [
+    {url: 'images/photo1.jpg', alt: 'Наша первая встреча'},
+    {url: 'images/photo2.jpg', alt: 'Наше первое свидание'},
+    {url: 'images/photo3.jpg', alt: 'Вместе на природе'},
+    {url: 'images/photo4.jpg', alt: 'Твой красивый смех'},
+    {url: 'images/photo5.jpg', alt: 'Наш совместный ужин'},
+    {url: 'images/photo6.jpg', alt: 'Лучшие моменты'},
+    {url: 'images/photo7.jpg', alt: 'Прогулка вдвоём'},
+    {url: 'images/photo8.jpg', alt: 'Наша первая поездка'},
+    {url: 'images/photo9.jpg', alt: 'Твой взгляд'},
+    {url: 'images/photo10.jpg', alt: 'Моменты счастья'},
+    {url: 'images/photo11.jpg', alt: 'Наши улыбки'}
+];
+                
+                photos.forEach(photo => {
+                    const photoItem = document.createElement('div');
+                    photoItem.classList.add('photo-item', 'fade-in');
+                    
+                    const img = document.createElement('img');
+                    img.src = photo.url;
+                    img.alt = photo.alt;
+                    img.loading = 'lazy';
+                    
+                    photoItem.appendChild(img);
+                    gallery.appendChild(photoItem);
+                });
+            }
+            
+            // Инициализация причин
+            function initReasons() {
+                const reasonsContainer = document.querySelector('.reasons');
+                
+                const reasons = [
+                    "За твой смех, который звучит лучше любой музыки",
+                    "За то, как ты смотришь на мир, с любопытством и добротой",
+                    "За твою стеснительность, которая делает тебя ещё милее",
+                    "За способность превращать 3 часа в 10 минут, когда мы вместе",
+                    "За то что ты всегда понимаешь без лишних слов",
+                    "За твои руки которые так идеально ложатся в мои",
+                    "За твою заботу и внимание ко мне",
+                    "За то как ты вдохновляешь меня становиться лучше",
+                    "За твою искренность и открытость",
+                    "За наши общие мечты и планы на будущее",
+                    "За твою поддержку в трудные моменты",
+                    "За то что ты просто есть в моей жизни"
+                ];
+                
+                reasons.forEach((reason, index) => {
+                    const reasonCard = document.createElement('div');
+                    reasonCard.classList.add('reason-card', 'fade-in');
+                    
+                    reasonCard.innerHTML = `
+                        <div class="reason-number">${index + 1}</div>
+                        <div class="reason-text">${reason}</div>
+                    `;
+                    
+                    reasonsContainer.appendChild(reasonCard);
+                });
+            }
+            
+ // Инициализация таймлайна
+function initTimeline() {
+    const timelineContainer = document.querySelector('.timeline');
+    
+    const moments = [
+        {
+            date: "2 ноября 2025",
+            title: "Наша первая встреча",
+            description: "Антикафе, где я впервые увидел твою улыбку и понял, что мне все еще может кто то понравиться"
+        },
+        {
+            date: "9 ноября 2025",
+            title: "Вышли вместе с компанией",
+            description: "Кто же мог подумать что с того момента все так повернется"
+        },
+        {
+            date: "7 декабря 2025",
+            title: "Фнаф",
+            description: "Этот день изменил все, наш первый поцелуй, первые чувства и осознание того что я хочу быть с тобой"
+        },
+        {
+            date: "ХХ января 2026(я не помню точно.)",
+            title: "Мини встреча",
+            description: "Попытка зацепиться хоть за часик свободного времени чтобы насладиться друг с другом"
+        },
+        {
+            date: "ХХ февраля 2026",
+            title: "Наш первый День всех влюблённых",
+            description: "Я готовил ужин, ты выбирала фильм. Всё сгорело, но мы заказали пиццу и смеялись до утра."
+        },
+        {
+            date: "Х марта 2026",
+            title: "Поездка на море",
+            description: "Твои глаза отражали океан, и я понял, что утону в них навсегда."
+        }
+    ];
+    
+    moments.forEach((moment, index) => {
+        const timelineItem = document.createElement('div');
+        timelineItem.classList.add('timeline-item', 'fade-in');
+        
+        // Определяем сторону для временной шкалы
+        if (index % 2 === 0) {
+            timelineItem.style.left = "0";
+        } else {
+            timelineItem.style.left = "55%";
+        }
+        
+        const timelineMarker = document.createElement('div');
+        timelineMarker.classList.add('timeline-marker');
+        
+        const timelineContent = document.createElement('div');
+        timelineContent.classList.add('timeline-content');
+        
+        // Дата всегда отображается как есть
+        const timelineDate = document.createElement('div');
+        timelineDate.classList.add('timeline-date');
+        timelineDate.textContent = moment.date;
+        
+        timelineContent.appendChild(timelineDate);
+        
+        // Для последних двух элементов создаем шифрованные названия и описания
+        if (index >= moments.length - 2) {
+            // Сохраняем только длину оригинальных текстов
+            const titleLength = moment.title.length;
+            const descLength = moment.description.length;
+            
+            // Создаем элементы для зашифрованного текста
+            const titleElement = document.createElement('h3');
+            titleElement.classList.add('timeline-title', 'encrypted-title');
+            
+            const descElement = document.createElement('p');
+            descElement.classList.add('timeline-desc', 'encrypted-desc');
+            
+            // Устанавливаем фиксированные размеры на основе оригинального текста
+            titleElement.dataset.originalLength = titleLength;
+            descElement.dataset.originalLength = descLength;
+            
+            // Функция для генерации случайных символов одинаковой ширины (только латиница и цифры)
+            function generateRandomString(length) {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*';
+                let result = '';
+                for (let i = 0; i < length; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+            
+            // Функция обновления зашифрованного текста
+            function updateEncryptedElements() {
+                const titleLength = parseInt(titleElement.dataset.originalLength);
+                const descLength = parseInt(descElement.dataset.originalLength);
+                
+                titleElement.textContent = generateRandomString(titleLength);
+                descElement.textContent = generateRandomString(descLength);
+            }
+            
+            // Инициализируем первый раз
+            updateEncryptedElements();
+            
+            // Запускаем интервалы для постоянного обновления
+            let titleInterval = setInterval(() => {
+                const length = parseInt(titleElement.dataset.originalLength);
+                titleElement.textContent = generateRandomString(length);
+            }, 80);
+            
+            let descInterval = setInterval(() => {
+                const length = parseInt(descElement.dataset.originalLength);
+                descElement.textContent = generateRandomString(length);
+            }, 70);
+            
+            // Останавливаем интервалы при наведении для производительности
+            timelineContent.addEventListener('mouseenter', () => {
+                clearInterval(titleInterval);
+                clearInterval(descInterval);
+            });
+            
+            timelineContent.addEventListener('mouseleave', () => {
+                titleInterval = setInterval(() => {
+                    const length = parseInt(titleElement.dataset.originalLength);
+                    titleElement.textContent = generateRandomString(length);
+                }, 80);
+                
+                descInterval = setInterval(() => {
+                    const length = parseInt(descElement.dataset.originalLength);
+                    descElement.textContent = generateRandomString(length);
+                }, 70);
+            });
+            
+            timelineContent.appendChild(titleElement);
+            timelineContent.appendChild(descElement);
+            
+            // Добавляем иконку шифрования
+            const encryptionIcon = document.createElement('div');
+            encryptionIcon.classList.add('encryption-icon');
+            encryptionIcon.innerHTML = '<i class="fas fa-lock"></i> Зашифровано';
+            timelineContent.appendChild(encryptionIcon);
+            
+        } else {
+            // Для обычных элементов показываем реальный текст
+            const titleElement = document.createElement('h3');
+            titleElement.classList.add('timeline-title');
+            titleElement.textContent = moment.title;
+            
+            const descElement = document.createElement('p');
+            descElement.classList.add('timeline-desc');
+            descElement.textContent = moment.description;
+            
+            timelineContent.appendChild(titleElement);
+            timelineContent.appendChild(descElement);
+        }
+        
+        // Позиционируем маркер
+        if (index % 2 === 0) {
+            timelineMarker.style.right = "-60px";
+        } else {
+            timelineMarker.style.left = "-60px";
+        }
+        
+        timelineItem.appendChild(timelineMarker);
+        timelineItem.appendChild(timelineContent);
+        timelineContainer.appendChild(timelineItem);
+    });
+}
+            
+// Интерактивные сердечки (исправленная версия)
+function initHearts() {
+    const heartButton = document.getElementById('heartButton');
+    
+    // Массив милых фраз
+    const messages = [
+        "Я скучаю по тебе",
+        "Ты мой мир",
+        "Мы вдвоём против всего",
+        "Ты лучшее, что со мной случалось",
+        "Скорее бы обнять тебя",
+        "Люблю твою улыбку",
+        "Жду нашей встречи",
+        "Ты в моих мыслях",
+        "Наше время бесценно",
+        "Ты заслуживаешь всей вселенной"
+    ];
+    
+    // Функция для безопасного получения случайной позиции
+    function getRandomPosition() {
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        
+        // Рассчитываем безопасные отступы (10% от экрана, но не менее 20px)
+        const paddingX = Math.max(20, screenWidth * 0.1);
+        const paddingY = Math.max(20, screenHeight * 0.1);
+        
+        // Генерируем случайные координаты в пределах безопасной зоны
+        const x = paddingX + Math.random() * (screenWidth - 2 * paddingX);
+        const y = paddingY + Math.random() * (screenHeight - 2 * paddingY);
+        
+        return { x, y };
+    }
+    
+    // Функция для создания летающего сердечка
+    function createFlyingHeart(x, y, message = null) {
+        const heart = document.createElement('div');
+        heart.classList.add('flying-heart');
+        heart.innerHTML = '<i class="fas fa-heart"></i>';
+        
+        // Устанавливаем позицию с проверкой границ
+        const heartSize = 30; // Приблизительный размер сердечка
+        const safeX = Math.max(heartSize, Math.min(x, window.innerWidth - heartSize));
+        const safeY = Math.max(heartSize, Math.min(y, window.innerHeight - heartSize));
+        
+        heart.style.left = `${safeX}px`;
+        heart.style.top = `${safeY}px`;
+        
+        // Случайный размер
+        const size = 15 + Math.random() * 15;
+        heart.style.fontSize = `${size}px`;
+        
+        // Случайный цвет
+        const colors = ['#ff2e8e', '#9d4edd', '#ff3a5e', '#5a86ff'];
+        heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Случайная анимация
+        const animationDuration = 2 + Math.random() * 3;
+        
+        // Направление движения (случайное, но с учетом границ)
+        const maxMoveX = window.innerWidth * 0.2; // Максимальное смещение по X - 20% от ширины экрана
+        const maxMoveY = window.innerHeight * 0.3; // Максимальное смещение по Y - 30% от высоты экрана
+        
+        const directionX = (Math.random() - 0.5) * 2; // -1 до 1
+        const directionY = -0.5 - Math.random() * 0.5; // -1 до -0.5 (в основном вверх)
+        
+        heart.style.setProperty('--move-x', `${directionX * maxMoveX}px`);
+        heart.style.setProperty('--move-y', `${directionY * maxMoveY}px`);
+        heart.style.animation = `fly-heart ${animationDuration}s ease-in forwards`;
+        
+        document.body.appendChild(heart);
+        
+        // Если есть сообщение, создаем его
+        if (message) {
+            setTimeout(() => {
+                createFloatingMessage(message, safeX, safeY);
+            }, 300);
+        }
+        
+        // Удаляем сердечко после анимации
+        setTimeout(() => {
+            if (heart.parentNode) {
+                heart.parentNode.removeChild(heart);
+            }
+        }, animationDuration * 1000);
+        
+        return heart;
+    }
+    
+    // Функция для создания всплывающего сообщения
+    function createFloatingMessage(message, x, y) {
+        const messageEl = document.createElement('div');
+        messageEl.classList.add('floating-message');
+        messageEl.textContent = message;
+        
+        // Позиционируем сообщение с учетом границ экрана
+        const messageWidth = 200; // Приблизительная ширина сообщения
+        const messageHeight = 50; // Приблизительная высота
+        
+        let posX = x;
+        let posY = y - 40; // Немного выше сердечка
+        
+        // Проверяем, чтобы сообщение не выходило за левый край
+        if (posX < messageWidth / 2) {
+            posX = messageWidth / 2;
+        }
+        
+        // Проверяем, чтобы сообщение не выходило за правый край
+        if (posX > window.innerWidth - messageWidth / 2) {
+            posX = window.innerWidth - messageWidth / 2;
+        }
+        
+        // Проверяем, чтобы сообщение не выходило за верхний край
+        if (posY < messageHeight) {
+            posY = y + 40; // Если сверху нет места, показываем снизу
+        }
+        
+        messageEl.style.left = `${posX}px`;
+        messageEl.style.top = `${posY}px`;
+        messageEl.style.transform = 'translateX(-50%)';
+        
+        document.body.appendChild(messageEl);
+        
+        // Удаляем сообщение после анимации
+        setTimeout(() => {
+            if (messageEl.parentNode) {
+                messageEl.parentNode.removeChild(messageEl);
+            }
+        }, 2500);
+    }
+    
+    // Обработчик клика на кнопку сердечка
+    heartButton.addEventListener('click', function(e) {
+        // Создаем несколько сердечек при клике
+        const heartCount = 2 + Math.floor(Math.random() * 3);
+        
+        for (let i = 0; i < heartCount; i++) {
+            setTimeout(() => {
+                const pos = getRandomPosition();
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                
+                // Только первое сердечко получает сообщение
+                if (i === 0) {
+                    createFlyingHeart(pos.x, pos.y, randomMessage);
+                } else {
+                    createFlyingHeart(pos.x, pos.y);
+                }
+            }, i * 150);
+        }
+    });
+    
+    // Автоматическое создание случайных сердечек
+    function createRandomHearts() {
+        // На мобильных создаем меньше сердечек
+        const isMobile = window.innerWidth <= 768;
+        const count = isMobile ? 1 : 1 + Math.floor(Math.random() * 2);
+        
+        for (let i = 0; i < count; i++) {
+            setTimeout(() => {
+                const pos = getRandomPosition();
+                createFlyingHeart(pos.x, pos.y);
+            }, i * 300);
+        }
+        
+        // Запускаем следующий раз через случайный интервал
+        const nextDelay = isMobile ? 10000 + Math.random() * 15000 : 7000 + Math.random() * 13000;
+        setTimeout(createRandomHearts, nextDelay);
+    }
+    
+    // Запускаем создание случайных сердечек
+    setTimeout(createRandomHearts, 3000);
+}      
+            // Анимация появления элементов при скролле
+            function initScrollAnimations() {
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('fade-in');
+                        }
+                    });
+                }, observerOptions);
+                
+                // Наблюдаем за всеми элементами, которые должны появляться
+                document.querySelectorAll('section, .photo-item, .reason-card, .timeline-item').forEach(el => {
+                    observer.observe(el);
+                });
+            }
+            
+            // Пасхалка при скролле
+            function initEasterEggs() {
+                let scrollMessagesShown = [];
+                const messages = [
+                    "Ты думала, я не замечу, как ты улыбаешься?",
+                    "Да, это сайт только для тебя. Гордись",
+                    "Скроллишь дальше? Я ценю твоё любопытство",
+                    "Знаешь, что я сейчас делаю? Думаю о тебе",
+                    "Если бы у меня была сверхспособность, я бы остановил время в наших лучших моментах",
+                    "Ты уже знаешь, как сильно я по тебе скучаю?",
+                    "Самый красивый вид - это ты по утрам",
+                    "Я бы отдал все гигабайты в мире чтобы хранить каждую нашу секунду",
+                    "Ты мое любимое отвлечение от всего мира",
+                    "Я бы проскроллил всю жизнь, если бы в конце была ты",
+                    "я люблю тебя больше, чем кофе по утрам"
+                ];
+                
+                window.addEventListener('scroll', function() {
+                    const scrollPosition = window.scrollY + window.innerHeight;
+                    const documentHeight = document.documentElement.scrollHeight;
+                    
+                    // Показываем сообщение, когда пользователь проскроллил определенный процент
+                    const scrollPercent = Math.floor((scrollPosition / documentHeight) * 100);
+                    
+                    if (scrollPercent % 20 === 0 && !scrollMessagesShown.includes(scrollPercent)) {
+                        scrollMessagesShown.push(scrollPercent);
+                        
+                        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                        createScrollMessage(randomMessage);
+                    }
+                });
+            }
+            
+            // Создание сообщения при скролле
+            function createScrollMessage(message) {
+                const messageEl = document.createElement('div');
+                messageEl.textContent = message;
+                messageEl.style.position = 'fixed';
+                messageEl.style.bottom = '20px';
+                messageEl.style.left = '50%';
+                messageEl.style.transform = 'translateX(-50%)';
+                messageEl.style.background = 'rgba(255, 46, 142, 0.9)';
+                messageEl.style.color = 'white';
+                messageEl.style.padding = '10px 20px';
+                messageEl.style.borderRadius = '25px';
+                messageEl.style.fontSize = '0.9rem';
+                messageEl.style.zIndex = '1000';
+                messageEl.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
+                messageEl.style.animation = 'fade-in 0.5s ease';
+                
+                document.body.appendChild(messageEl);
+                
+                setTimeout(() => {
+                    messageEl.style.opacity = '0';
+                    messageEl.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        if (messageEl.parentNode) {
+                            messageEl.parentNode.removeChild(messageEl);
+                        }
+                    }, 500);
+                }, 3000);
+            }
+            
+            // Инициализация всего при загрузке страницы
+            document.addEventListener('DOMContentLoaded', function() {
+                createParticles();
+                initGallery();
+                initReasons();
+                initTimeline();
+                initHearts();
+                initScrollAnimations();
+                initEasterEggs();
+                
+                // Показываем первое сообщение-пасхалку
+                setTimeout(() => {
+                    createScrollMessage("Привет, Айла. Добро пожаловать в нашу маленькую вселенную.");
+                }, 1500);
+            });
+
+            // Анимация для финального сообщения
+function initFinalMessage() {
+    const messageTexts = document.querySelectorAll('.message-text');
+    
+    // Появляющийся эффект для каждого абзаца
+    messageTexts.forEach((text, index) => {
+        text.style.opacity = '0';
+        text.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            text.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            text.style.opacity = '0.9';
+            text.style.transform = 'translateY(0)';
+        }, 300 + index * 300);
+    });
+    
+    // Добавляем случайные парящие сердечки в блоке
+    const messageGlass = document.querySelector('.message-glass');
+    
+    for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+            createFloatingHeartInContainer(messageGlass);
+        }, i * 500);
+    }
+}
+
+// Создание плавающих сердечек внутри контейнера
+function createFloatingHeartInContainer(container) {
+    const heart = document.createElement('div');
+    heart.innerHTML = '<i class="fas fa-heart"></i>';
+    heart.style.position = 'absolute';
+    heart.style.fontSize = Math.random() * 10 + 8 + 'px';
+    heart.style.color = Math.random() > 0.5 ? '#ff2e8e' : '#9d4edd';
+    heart.style.opacity = '0.3';
+    heart.style.zIndex = '0';
+    
+    // Случайная позиция внутри контейнера
+    const posX = Math.random() * 90 + 5; // 5% - 95%
+    const posY = Math.random() * 90 + 5;
+    
+    heart.style.left = `${posX}%`;
+    heart.style.top = `${posY}%`;
+    
+    // Анимация парения
+    heart.style.animation = `float ${Math.random() * 10 + 10}s ease-in-out infinite`;
+    
+    container.appendChild(heart);
+}
+
+// Добавьте вызов функции в инициализацию
+document.addEventListener('DOMContentLoaded', function() {
+    // ... существующий код ...
+    
+    // Добавьте эту строку в конец функции
+    initFinalMessage();
+});s
+
+        </script>
+        
+    </body>
+    </html>
